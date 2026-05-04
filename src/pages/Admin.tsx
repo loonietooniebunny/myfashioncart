@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ProductsManager } from "@/components/admin/ProductsManager";
 import { CategoriesManager } from "@/components/admin/CategoriesManager";
+import { OrdersManager } from "@/components/admin/OrdersManager";
+import { PaymentSettingsManager } from "@/components/admin/PaymentSettingsManager";
 import { LogOut, Home } from "lucide-react";
 
 const Admin = () => {
