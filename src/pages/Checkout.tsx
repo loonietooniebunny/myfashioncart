@@ -98,6 +98,7 @@ const Checkout = () => {
     const { error } = await supabase.from("orders").insert({
       ...parsed.data,
       user_id: user?.id ?? null,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: items.map(i => ({ product_id: i.productId, name: i.name, size: i.size, qty: i.qty, price: i.price, image: i.image })),
       subtotal,
       shipping_fee: shipping + codFee,
