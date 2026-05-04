@@ -47,6 +47,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          fulfillment_note: string | null
           id: string
           items: Json
           notes: string | null
@@ -54,6 +55,7 @@ export type Database = {
           payment_method: string
           payment_reference: string | null
           payment_status: string
+          receipt_url: string | null
           shipping_address: string
           shipping_city: string
           shipping_country: string
@@ -62,6 +64,7 @@ export type Database = {
           shipping_zip: string | null
           subtotal: number
           total: number
+          tracking_number: string | null
           updated_at: string
           user_id: string | null
         }
@@ -70,6 +73,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          fulfillment_note?: string | null
           id?: string
           items?: Json
           notes?: string | null
@@ -77,6 +81,7 @@ export type Database = {
           payment_method: string
           payment_reference?: string | null
           payment_status?: string
+          receipt_url?: string | null
           shipping_address: string
           shipping_city: string
           shipping_country?: string
@@ -85,6 +90,7 @@ export type Database = {
           shipping_zip?: string | null
           subtotal?: number
           total?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -93,6 +99,7 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          fulfillment_note?: string | null
           id?: string
           items?: Json
           notes?: string | null
@@ -100,6 +107,7 @@ export type Database = {
           payment_method?: string
           payment_reference?: string | null
           payment_status?: string
+          receipt_url?: string | null
           shipping_address?: string
           shipping_city?: string
           shipping_country?: string
@@ -108,6 +116,7 @@ export type Database = {
           shipping_zip?: string | null
           subtotal?: number
           total?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -258,6 +267,39 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shipping_zones: {
+        Row: {
+          city: string
+          cod_fee: number
+          created_at: string
+          estimated_days: string | null
+          fee: number
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          city: string
+          cod_fee?: number
+          created_at?: string
+          estimated_days?: string | null
+          fee?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          cod_fee?: number
+          created_at?: string
+          estimated_days?: string | null
+          fee?: number
+          id?: string
+          is_active?: boolean
           updated_at?: string
         }
         Relationships: []

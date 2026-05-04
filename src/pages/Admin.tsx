@@ -6,6 +6,7 @@ import { ProductsManager } from "@/components/admin/ProductsManager";
 import { CategoriesManager } from "@/components/admin/CategoriesManager";
 import { OrdersManager } from "@/components/admin/OrdersManager";
 import { PaymentSettingsManager } from "@/components/admin/PaymentSettingsManager";
+import { ShippingZonesManager } from "@/components/admin/ShippingZonesManager";
 import { LogOut, Home } from "lucide-react";
 
 const Admin = () => {
@@ -40,11 +41,13 @@ const Admin = () => {
               <TabsTrigger value="products">Products</TabsTrigger>
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
+              <TabsTrigger value="shipping">Shipping</TabsTrigger>
             </TabsList>
             <TabsContent value="orders" className="mt-4"><OrdersManager /></TabsContent>
             <TabsContent value="products" className="mt-4"><ProductsManager /></TabsContent>
             <TabsContent value="categories" className="mt-4"><CategoriesManager /></TabsContent>
             <TabsContent value="payments" className="mt-4"><PaymentSettingsManager /></TabsContent>
+            <TabsContent value="shipping" className="mt-4"><ShippingZonesManager /></TabsContent>
           </Tabs>
         )}
       </main>

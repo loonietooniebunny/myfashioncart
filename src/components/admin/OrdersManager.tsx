@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 type Order = any;
@@ -107,6 +109,24 @@ export const OrdersManager = () => {
                 <p className="text-muted-foreground mb-1">Payment</p>
                 <Badge variant="outline" className="capitalize mr-2">{selected.payment_method}</Badge>
                 {selected.payment_reference && <span>Ref: <b>{selected.payment_reference}</b></span>}
+                {selected.receipt_url && (
+                  <div className="mt-2">
+                    <a href={selected.receipt_url} target="_blank" rel="noreferrer" className="inline-block">
+                      <img src={selected.receipt_url} alt="Receipt" className="max-h-48 border" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                      <span className="text-xs underline block mt-1">Open receipt</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <p className="text-muted-foreground text-xs">Tracking number</p>
+                  <Input defaultValue={selected.tracking_number ?? ""} onBlur={(e) => update(selected.id, { tracking_number: e.target.value })} placeholder="Courier tracking #" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground text-xs">Fulfillment note</p>
+                  <Textarea defaultValue={selected.fulfillment_note ?? ""} onBlur={(e) => update(selected.id, { fulfillment_note: e.target.value })} rows={2} placeholder="Internal note" />
+                </div>
               </div>
               <div>
                 <p className="text-muted-foreground mb-2">Items</p>
