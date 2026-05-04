@@ -58,7 +58,7 @@ export const Navbar = () => {
             <button aria-label="Search" onClick={() => setSearchOpen(true)} className="hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
             </button>
-            <Link to="/admin" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
+            <Link to="/account" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
             <button aria-label="Cart" onClick={() => setOpen(true)} className="relative hover:text-accent transition-colors">
@@ -104,7 +104,7 @@ export const Navbar = () => {
             {NAV.map(n => (
               <NavLink key={n.to} to={n.to} onClick={() => setMenuOpen(false)}>{n.label}</NavLink>
             ))}
-            <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Account</Link>
+            <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Account</Link>
           </nav>
         </div>
       )}

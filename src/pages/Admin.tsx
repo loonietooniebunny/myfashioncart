@@ -13,7 +13,8 @@ const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to="/auth?next=/admin" replace />;
+  if (!isAdmin) return <Navigate to="/account" replace />;
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,15 +28,7 @@ const Admin = () => {
         </div>
       </header>
       <main className="container py-8">
-        {!isAdmin ? (
-          <div className="max-w-xl mx-auto text-center space-y-3 py-16">
-            <h2 className="text-2xl font-semibold">Admin access required</h2>
-            <p className="text-muted-foreground">
-              Your account ({user.email}) doesn't have the admin role yet. Open the backend, go to the <code>user_roles</code> table, and add a row with your user id and role <code>admin</code>.
-            </p>
-          </div>
-        ) : (
-          <Tabs defaultValue="orders">
+        <Tabs defaultValue="orders">
             <TabsList>
               <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="products">Products</TabsTrigger>
@@ -49,7 +42,6 @@ const Admin = () => {
             <TabsContent value="payments" className="mt-4"><PaymentSettingsManager /></TabsContent>
             <TabsContent value="shipping" className="mt-4"><ShippingZonesManager /></TabsContent>
           </Tabs>
-        )}
       </main>
     </div>
   );
