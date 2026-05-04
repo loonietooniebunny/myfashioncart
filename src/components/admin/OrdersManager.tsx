@@ -147,6 +147,24 @@ export const OrdersManager = () => {
                 <td className="p-3 whitespace-nowrap">PKR {Number(o.total).toLocaleString()}</td>
                 <td className="p-3 capitalize">{o.payment_method}</td>
                 <td className="p-3">
+                  {o.receipt_url ? (
+                    <div className="flex items-center gap-2">
+                      <a href={o.receipt_url} target="_blank" rel="noreferrer" title="Preview receipt">
+                        {/\.(png|jpe?g|webp|gif)$/i.test(o.receipt_url) ? (
+                          <img src={o.receipt_url} alt="receipt" className="h-10 w-10 object-cover border rounded" />
+                        ) : (
+                          <FileText className="h-5 w-5" />
+                        )}
+                      </a>
+                      <a href={o.receipt_url} download className="text-muted-foreground hover:text-foreground" title="Download">
+                        <Download className="h-4 w-4" />
+                      </a>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">—</span>
+                  )}
+                </td>
+                <td className="p-3">
                   <Select value={o.payment_status} onValueChange={(v) => update(o.id, { payment_status: v })}>
                     <SelectTrigger className="h-8 w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
