@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { useCart } from "@/hooks/useCart";
@@ -9,28 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Upload } from "lucide-react";
 
-type PaySettings = {
-  enable_card: boolean;
-  enable_easypaisa: boolean;
-  enable_jazzcash: boolean;
-  enable_cod: boolean;
-  easypaisa_account: string | null;
-  easypaisa_name: string | null;
-  jazzcash_account: string | null;
-  jazzcash_name: string | null;
-  bank_name: string | null;
-  bank_account_number: string | null;
-  bank_account_title: string | null;
-  bank_iban: string | null;
-  cod_fee: number;
-  shipping_fee: number;
-  free_shipping_threshold: number;
-  currency: string;
-  instructions: string | null;
-};
+type PaySettings = any;
+type Zone = { id: string; city: string; fee: number; cod_fee: number; estimated_days: string | null; is_active: boolean };
 
 const schema = z.object({
   customer_name: z.string().trim().min(2).max(100),
@@ -52,6 +37,8 @@ const Checkout = () => {
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<PaySettings | null>(null);
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [form, setForm] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     shipping_address: "", shipping_city: "", shipping_state: "", shipping_zip: "",
@@ -62,20 +49,23 @@ const Checkout = () => {
   });
 
   useEffect(() => {
-    supabase.from("payment_settings").select("*").limit(1).maybeSingle()
-      .then(({ data }) => {
+    supabase.from("payment_settings" as any).select("*").limit(1).maybeSingle()
+      .then(({ data }: any) => {
         if (data) {
-          setSettings(data as PaySettings);
+          setSettings(data);
           const first = data.enable_cod ? "cod" : data.enable_easypaisa ? "easypaisa" : data.enable_jazzcash ? "jazzcash" : "card";
           setForm(f => ({ ...f, payment_method: first as any }));
         }
       });
+    (supabase as any).from("shipping_zones").select("*").eq("is_active", true).order("city")
+      .then(({ data }: any) => setZones(data ?? []));
   }, []);
 
   const currency = settings?.currency ?? "PKR";
-  const baseShipping = settings?.shipping_fee ?? 0;
+  const selectedZone = useMemo(() => zones.find(z => z.city === form.shipping_city), [zones, form.shipping_city]);
+  const baseShipping = selectedZone?.fee ?? settings?.shipping_fee ?? 0;
   const freeThreshold = settings?.free_shipping_threshold ?? 0;
-  const codFee = form.payment_method === "cod" ? (settings?.cod_fee ?? 0) : 0;
+  const codFee = form.payment_method === "cod" ? (selectedZone?.cod_fee ?? settings?.cod_fee ?? 0) : 0;
   const shipping = items.length === 0 ? 0 : (subtotal >= freeThreshold && freeThreshold > 0 ? 0 : baseShipping);
   const total = subtotal + shipping + codFee;
 
@@ -86,15 +76,22 @@ const Checkout = () => {
     e.preventDefault();
     if (items.length === 0) return;
     const parsed = schema.safeParse(form);
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0].message);
-      return;
-    }
+    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     if (form.payment_method !== "cod" && !form.payment_reference.trim()) {
       toast.error("Please enter the transaction ID / reference");
       return;
     }
     setBusy(true);
+
+    let receipt_url: string | null = null;
+    if (receiptFile && form.payment_method !== "cod") {
+      const ext = receiptFile.name.split(".").pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("payment-receipts").upload(path, receiptFile);
+      if (upErr) { setBusy(false); toast.error(upErr.message); return; }
+      receipt_url = supabase.storage.from("payment-receipts").getPublicUrl(path).data.publicUrl;
+    }
+
     const payload: any = {
       ...parsed.data,
       user_id: user?.id ?? null,
@@ -104,6 +101,7 @@ const Checkout = () => {
       total,
       payment_status: form.payment_method === "cod" ? "pending" : "awaiting_verification",
       order_status: "pending",
+      receipt_url,
     };
     const { error } = await supabase.from("orders" as any).insert(payload);
     setBusy(false);
@@ -132,11 +130,19 @@ const Checkout = () => {
             <p className="text-xs tracking-luxe uppercase">Shipping Address</p>
             <Input required placeholder="Address" value={form.shipping_address} onChange={update("shipping_address")} className="rounded-none h-12" />
             <div className="grid grid-cols-3 gap-3">
-              <Input required placeholder="City" value={form.shipping_city} onChange={update("shipping_city")} className="rounded-none h-12" />
+              <Select value={form.shipping_city} onValueChange={(v) => setForm({ ...form, shipping_city: v })}>
+                <SelectTrigger className="rounded-none h-12"><SelectValue placeholder="Select city" /></SelectTrigger>
+                <SelectContent>
+                  {zones.map(z => <SelectItem key={z.id} value={z.city}>{z.city} — {currency} {z.fee}</SelectItem>)}
+                </SelectContent>
+              </Select>
               <Input placeholder="Province" value={form.shipping_state} onChange={update("shipping_state")} className="rounded-none h-12" />
               <Input placeholder="ZIP" value={form.shipping_zip} onChange={update("shipping_zip")} className="rounded-none h-12" />
             </div>
             <Input required placeholder="Country" value={form.shipping_country} onChange={update("shipping_country")} className="rounded-none h-12" />
+            {selectedZone?.estimated_days && (
+              <p className="text-xs text-muted-foreground">Estimated delivery: {selectedZone.estimated_days}</p>
+            )}
           </section>
 
           <section className="space-y-3">
@@ -147,7 +153,7 @@ const Checkout = () => {
                   <RadioGroupItem value="cod" className="mt-1" />
                   <div>
                     <p className="font-medium">Cash on Delivery</p>
-                    <p className="text-sm text-muted-foreground">Pay in cash when your order arrives.{settings.cod_fee > 0 ? ` (+${fmt(settings.cod_fee)} fee)` : ""}</p>
+                    <p className="text-sm text-muted-foreground">Pay in cash when your order arrives.{codFee > 0 ? ` (+${fmt(codFee)} fee)` : ""}</p>
                   </div>
                 </label>
               )}
@@ -184,9 +190,22 @@ const Checkout = () => {
             </RadioGroup>
 
             {form.payment_method !== "cod" && (
-              <div className="space-y-2 pt-2">
-                <Label className="text-xs">Transaction ID / Reference</Label>
-                <Input required placeholder="Enter TID after sending payment" value={form.payment_reference} onChange={update("payment_reference")} className="rounded-none h-12" />
+              <div className="space-y-3 pt-2">
+                <div className="space-y-2">
+                  <Label className="text-xs">Transaction ID / Reference</Label>
+                  <Input required placeholder="Enter TID after sending payment" value={form.payment_reference} onChange={update("payment_reference")} className="rounded-none h-12" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs">Upload payment receipt (optional)</Label>
+                  <label className="flex items-center gap-3 border border-dashed p-4 cursor-pointer hover:bg-secondary">
+                    <Upload className="h-4 w-4" />
+                    <span className="text-sm text-muted-foreground flex-1">
+                      {receiptFile ? receiptFile.name : "Choose screenshot or photo of payment"}
+                    </span>
+                    <input type="file" accept="image/*,application/pdf" className="hidden"
+                      onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)} />
+                  </label>
+                </div>
                 {settings?.instructions && <p className="text-xs text-muted-foreground">{settings.instructions}</p>}
               </div>
             )}
@@ -219,7 +238,7 @@ const Checkout = () => {
           </div>
           <div className="border-t mt-4 pt-4 space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{fmt(subtotal)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span>{shipping === 0 ? "Free" : fmt(shipping)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Shipping {selectedZone ? `(${selectedZone.city})` : ""}</span><span>{shipping === 0 ? (items.length ? "Free" : "—") : fmt(shipping)}</span></div>
             {codFee > 0 && <div className="flex justify-between"><span className="text-muted-foreground">COD fee</span><span>{fmt(codFee)}</span></div>}
             <div className="flex justify-between text-base pt-2 border-t mt-2"><span>Total</span><span>{fmt(total)}</span></div>
           </div>
