@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Search, Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 type Order = any;
@@ -43,52 +44,82 @@ export const OrdersManager = () => {
   const [fPayment, setFPayment] = useState("all");
   const [fStatus, setFStatus] = useState("all");
   const [fCity, setFCity] = useState("all");
+  const [fMethod, setFMethod] = useState("all");
+  const [query, setQuery] = useState("");
 
   const cities = useMemo(
     () => Array.from(new Set(orders.map(o => o.shipping_city).filter(Boolean))).sort(),
     [orders]
   );
 
-  const filtered = useMemo(() => orders.filter(o =>
-    (fPayment === "all" || o.payment_status === fPayment) &&
-    (fStatus === "all" || o.order_status === fStatus) &&
-    (fCity === "all" || o.shipping_city === fCity)
-  ), [orders, fPayment, fStatus, fCity]);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return orders.filter(o =>
+      (fPayment === "all" || o.payment_status === fPayment) &&
+      (fStatus === "all" || o.order_status === fStatus) &&
+      (fCity === "all" || o.shipping_city === fCity) &&
+      (fMethod === "all" || o.payment_method === fMethod) &&
+      (q === "" ||
+        String(o.id).toLowerCase().includes(q) ||
+        (o.customer_name ?? "").toLowerCase().includes(q))
+    );
+  }, [orders, fPayment, fStatus, fCity, fMethod, query]);
 
-  const reset = () => { setFPayment("all"); setFStatus("all"); setFCity("all"); };
-  const hasFilters = fPayment !== "all" || fStatus !== "all" || fCity !== "all";
+  const reset = () => { setFPayment("all"); setFStatus("all"); setFCity("all"); setFMethod("all"); setQuery(""); };
+  const hasFilters = fPayment !== "all" || fStatus !== "all" || fCity !== "all" || fMethod !== "all" || query !== "";
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>;
   if (orders.length === 0) return <p className="text-muted-foreground text-sm">No orders yet.</p>;
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <Select value={fPayment} onValueChange={setFPayment}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Payment status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All payment statuses</SelectItem>
-            {["pending", "awaiting_verification", "paid", "failed", "refunded"].map(s =>
-              <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={fStatus} onValueChange={setFStatus}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Fulfillment status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All fulfillment statuses</SelectItem>
-            {["pending", "processing", "shipped", "delivered", "cancelled"].map(s =>
-              <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={fCity} onValueChange={setFCity}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="City" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All cities</SelectItem>
-            {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        {hasFilters && <Button variant="ghost" size="sm" onClick={reset}>Clear</Button>}
-        <span className="text-xs text-muted-foreground ml-auto">{filtered.length} of {orders.length}</span>
+      <div className="space-y-3 mb-4">
+        <div className="relative max-w-md">
+          <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by order ID or customer name…"
+            className="pl-9 h-9"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={fPayment} onValueChange={setFPayment}>
+            <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Payment status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All payment statuses</SelectItem>
+              {["pending", "awaiting_verification", "paid", "failed", "refunded"].map(s =>
+                <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fStatus} onValueChange={setFStatus}>
+            <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Fulfillment status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All fulfillment statuses</SelectItem>
+              {["pending", "processing", "shipped", "delivered", "cancelled"].map(s =>
+                <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fMethod} onValueChange={setFMethod}>
+            <SelectTrigger className="h-9 w-44"><SelectValue placeholder="Payment method" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All methods</SelectItem>
+              <SelectItem value="cod">Cash on Delivery</SelectItem>
+              <SelectItem value="easypaisa">EasyPaisa</SelectItem>
+              <SelectItem value="jazzcash">JazzCash</SelectItem>
+              <SelectItem value="card">Bank Transfer / Card</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={fCity} onValueChange={setFCity}>
+            <SelectTrigger className="h-9 w-48"><SelectValue placeholder="City" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All cities</SelectItem>
+              {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {hasFilters && <Button variant="ghost" size="sm" onClick={reset}>Clear</Button>}
+          <span className="text-xs text-muted-foreground ml-auto">{filtered.length} of {orders.length}</span>
+        </div>
       </div>
 
       <div className="border rounded-md overflow-x-auto">
@@ -99,6 +130,7 @@ export const OrdersManager = () => {
               <th className="p-3">Customer</th>
               <th className="p-3">Total</th>
               <th className="p-3">Method</th>
+              <th className="p-3">Receipt</th>
               <th className="p-3">Payment</th>
               <th className="p-3">Status</th>
               <th className="p-3"></th>
@@ -114,6 +146,24 @@ export const OrdersManager = () => {
                 </td>
                 <td className="p-3 whitespace-nowrap">PKR {Number(o.total).toLocaleString()}</td>
                 <td className="p-3 capitalize">{o.payment_method}</td>
+                <td className="p-3">
+                  {o.receipt_url ? (
+                    <div className="flex items-center gap-2">
+                      <a href={o.receipt_url} target="_blank" rel="noreferrer" title="Preview receipt">
+                        {/\.(png|jpe?g|webp|gif)$/i.test(o.receipt_url) ? (
+                          <img src={o.receipt_url} alt="receipt" className="h-10 w-10 object-cover border rounded" />
+                        ) : (
+                          <FileText className="h-5 w-5" />
+                        )}
+                      </a>
+                      <a href={o.receipt_url} download className="text-muted-foreground hover:text-foreground" title="Download">
+                        <Download className="h-4 w-4" />
+                      </a>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">—</span>
+                  )}
+                </td>
                 <td className="p-3">
                   <Select value={o.payment_status} onValueChange={(v) => update(o.id, { payment_status: v })}>
                     <SelectTrigger className="h-8 w-40"><SelectValue /></SelectTrigger>
