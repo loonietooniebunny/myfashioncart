@@ -41,6 +41,144 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          notes: string | null
+          order_status: string
+          payment_method: string
+          payment_reference: string | null
+          payment_status: string
+          shipping_address: string
+          shipping_city: string
+          shipping_country: string
+          shipping_fee: number
+          shipping_state: string | null
+          shipping_zip: string | null
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_status?: string
+          payment_method: string
+          payment_reference?: string | null
+          payment_status?: string
+          shipping_address: string
+          shipping_city: string
+          shipping_country?: string
+          shipping_fee?: number
+          shipping_state?: string | null
+          shipping_zip?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_status?: string
+          payment_method?: string
+          payment_reference?: string | null
+          payment_status?: string
+          shipping_address?: string
+          shipping_city?: string
+          shipping_country?: string
+          shipping_fee?: number
+          shipping_state?: string | null
+          shipping_zip?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      payment_settings: {
+        Row: {
+          bank_account_number: string | null
+          bank_account_title: string | null
+          bank_iban: string | null
+          bank_name: string | null
+          cod_fee: number
+          currency: string
+          easypaisa_account: string | null
+          easypaisa_name: string | null
+          enable_card: boolean
+          enable_cod: boolean
+          enable_easypaisa: boolean
+          enable_jazzcash: boolean
+          free_shipping_threshold: number
+          id: string
+          instructions: string | null
+          jazzcash_account: string | null
+          jazzcash_name: string | null
+          shipping_fee: number
+          updated_at: string
+        }
+        Insert: {
+          bank_account_number?: string | null
+          bank_account_title?: string | null
+          bank_iban?: string | null
+          bank_name?: string | null
+          cod_fee?: number
+          currency?: string
+          easypaisa_account?: string | null
+          easypaisa_name?: string | null
+          enable_card?: boolean
+          enable_cod?: boolean
+          enable_easypaisa?: boolean
+          enable_jazzcash?: boolean
+          free_shipping_threshold?: number
+          id?: string
+          instructions?: string | null
+          jazzcash_account?: string | null
+          jazzcash_name?: string | null
+          shipping_fee?: number
+          updated_at?: string
+        }
+        Update: {
+          bank_account_number?: string | null
+          bank_account_title?: string | null
+          bank_iban?: string | null
+          bank_name?: string | null
+          cod_fee?: number
+          currency?: string
+          easypaisa_account?: string | null
+          easypaisa_name?: string | null
+          enable_card?: boolean
+          enable_cod?: boolean
+          enable_easypaisa?: boolean
+          enable_jazzcash?: boolean
+          free_shipping_threshold?: number
+          id?: string
+          instructions?: string | null
+          jazzcash_account?: string | null
+          jazzcash_name?: string | null
+          shipping_fee?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category_id: string | null
