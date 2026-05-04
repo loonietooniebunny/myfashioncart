@@ -105,7 +105,7 @@ export const OrdersManager = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(o => (
+            {filtered.map(o => (
               <tr key={o.id} className="border-t">
                 <td className="p-3 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
                 <td className="p-3">
