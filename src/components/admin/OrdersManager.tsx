@@ -73,41 +73,6 @@ export const OrdersManager = () => {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <Select value={fPayment} onValueChange={setFPayment}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Payment status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All payment statuses</SelectItem>
-            {["pending", "awaiting_verification", "paid", "failed", "refunded"].map(s =>
-              <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={fStatus} onValueChange={setFStatus}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Fulfillment status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All fulfillment statuses</SelectItem>
-            {["pending", "processing", "shipped", "delivered", "cancelled"].map(s =>
-              <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={fCity} onValueChange={setFCity}>
-          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="City" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All cities</SelectItem>
-            {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        {hasFilters && <Button variant="ghost" size="sm" onClick={reset}>Clear</Button>}
-        <span className="text-xs text-muted-foreground ml-auto">{filtered.length} of {orders.length}</span>
-      </div>
-
-      <div className="border rounded-md overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50">
-            <tr className="text-left">
-              <th className="p-3">Date</th>
-              <th className="p-3">Customer</th>
-              <th className="p-3">Total</th>
       <div className="space-y-3 mb-4">
         <div className="relative max-w-md">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
