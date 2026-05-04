@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,11 +40,57 @@ export const OrdersManager = () => {
     load();
   };
 
+  const [fPayment, setFPayment] = useState("all");
+  const [fStatus, setFStatus] = useState("all");
+  const [fCity, setFCity] = useState("all");
+
+  const cities = useMemo(
+    () => Array.from(new Set(orders.map(o => o.shipping_city).filter(Boolean))).sort(),
+    [orders]
+  );
+
+  const filtered = useMemo(() => orders.filter(o =>
+    (fPayment === "all" || o.payment_status === fPayment) &&
+    (fStatus === "all" || o.order_status === fStatus) &&
+    (fCity === "all" || o.shipping_city === fCity)
+  ), [orders, fPayment, fStatus, fCity]);
+
+  const reset = () => { setFPayment("all"); setFStatus("all"); setFCity("all"); };
+  const hasFilters = fPayment !== "all" || fStatus !== "all" || fCity !== "all";
+
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>;
   if (orders.length === 0) return <p className="text-muted-foreground text-sm">No orders yet.</p>;
 
   return (
     <>
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Select value={fPayment} onValueChange={setFPayment}>
+          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Payment status" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All payment statuses</SelectItem>
+            {["pending", "awaiting_verification", "paid", "failed", "refunded"].map(s =>
+              <SelectItem key={s} value={s}>{s}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={fStatus} onValueChange={setFStatus}>
+          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="Fulfillment status" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All fulfillment statuses</SelectItem>
+            {["pending", "processing", "shipped", "delivered", "cancelled"].map(s =>
+              <SelectItem key={s} value={s}>{s}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={fCity} onValueChange={setFCity}>
+          <SelectTrigger className="h-9 w-48"><SelectValue placeholder="City" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All cities</SelectItem>
+            {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {hasFilters && <Button variant="ghost" size="sm" onClick={reset}>Clear</Button>}
+        <span className="text-xs text-muted-foreground ml-auto">{filtered.length} of {orders.length}</span>
+      </div>
+
       <div className="border rounded-md overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
