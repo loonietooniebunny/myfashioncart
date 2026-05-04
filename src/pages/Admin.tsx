@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ProductsManager } from "@/components/admin/ProductsManager";
 import { CategoriesManager } from "@/components/admin/CategoriesManager";
+import { OrdersManager } from "@/components/admin/OrdersManager";
+import { PaymentSettingsManager } from "@/components/admin/PaymentSettingsManager";
 import { LogOut, Home } from "lucide-react";
 
 const Admin = () => {
@@ -32,13 +34,17 @@ const Admin = () => {
             </p>
           </div>
         ) : (
-          <Tabs defaultValue="products">
+          <Tabs defaultValue="orders">
             <TabsList>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="products">Products</TabsTrigger>
               <TabsTrigger value="categories">Categories</TabsTrigger>
+              <TabsTrigger value="payments">Payments</TabsTrigger>
             </TabsList>
+            <TabsContent value="orders" className="mt-4"><OrdersManager /></TabsContent>
             <TabsContent value="products" className="mt-4"><ProductsManager /></TabsContent>
             <TabsContent value="categories" className="mt-4"><CategoriesManager /></TabsContent>
+            <TabsContent value="payments" className="mt-4"><PaymentSettingsManager /></TabsContent>
           </Tabs>
         )}
       </main>
