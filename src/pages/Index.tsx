@@ -1,16 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-6 text-center">
+      <h1 className="text-4xl font-bold mb-3">Your Store</h1>
+      <p className="text-muted-foreground mb-6 max-w-md">
+        The storefront isn't built yet. Use the admin section to add products and categories.
+      </p>
+      <div className="flex gap-3">
+        <Button asChild><Link to="/admin">Open Admin</Link></Button>
+        <Button asChild variant="outline"><Link to="/auth">Sign in</Link></Button>
+      </div>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
