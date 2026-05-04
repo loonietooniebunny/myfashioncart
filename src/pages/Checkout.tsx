@@ -95,17 +95,17 @@ const Checkout = () => {
       return;
     }
     setBusy(true);
-    const { error } = await supabase.from("orders").insert({
+    const payload: any = {
       ...parsed.data,
       user_id: user?.id ?? null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: items.map(i => ({ product_id: i.productId, name: i.name, size: i.size, qty: i.qty, price: i.price, image: i.image })),
       subtotal,
       shipping_fee: shipping + codFee,
       total,
       payment_status: form.payment_method === "cod" ? "pending" : "awaiting_verification",
       order_status: "pending",
-    });
+    };
+    const { error } = await supabase.from("orders" as any).insert(payload);
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Order placed! We'll contact you shortly.");
