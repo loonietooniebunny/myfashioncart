@@ -124,6 +124,10 @@ const ProductDetail = () => {
           <Link to="/" className="inline-block text-xs tracking-luxe uppercase underline underline-offset-4">← Continue browsing</Link>
         </div>
       </div>
+
+      <section className="container py-12 md:py-16 max-w-3xl border-t border-border">
+        <Reviews productId={p.id} />
+      </section>
     </StoreLayout>
   );
 };
