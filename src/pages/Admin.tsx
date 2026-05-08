@@ -7,6 +7,7 @@ import { CategoriesManager } from "@/components/admin/CategoriesManager";
 import { OrdersManager } from "@/components/admin/OrdersManager";
 import { PaymentSettingsManager } from "@/components/admin/PaymentSettingsManager";
 import { ShippingZonesManager } from "@/components/admin/ShippingZonesManager";
+import { SiteSettingsManager } from "@/components/admin/SiteSettingsManager";
 import { LogOut, Home } from "lucide-react";
 
 const Admin = () => {
@@ -29,18 +30,20 @@ const Admin = () => {
       </header>
       <main className="container py-8">
         <Tabs defaultValue="orders">
-            <TabsList>
+            <TabsList className="flex-wrap h-auto">
               <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="products">Products</TabsTrigger>
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
               <TabsTrigger value="shipping">Shipping</TabsTrigger>
+              <TabsTrigger value="site">Site Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="orders" className="mt-4"><OrdersManager /></TabsContent>
             <TabsContent value="products" className="mt-4"><ProductsManager /></TabsContent>
             <TabsContent value="categories" className="mt-4"><CategoriesManager /></TabsContent>
             <TabsContent value="payments" className="mt-4"><PaymentSettingsManager /></TabsContent>
             <TabsContent value="shipping" className="mt-4"><ShippingZonesManager /></TabsContent>
+            <TabsContent value="site" className="mt-4"><SiteSettingsManager /></TabsContent>
           </Tabs>
       </main>
     </div>
