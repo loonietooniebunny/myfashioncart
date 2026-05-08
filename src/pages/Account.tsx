@@ -11,9 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { LogOut, Home, Package, MapPin, User as UserIcon, Plus, Trash2 } from "lucide-react";
+import { LogOut, Home, Package, MapPin, User as UserIcon, Plus, Trash2, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { StoreLayout } from "@/components/storefront/StoreLayout";
+import { ProductCard, ProductCardData } from "@/components/storefront/ProductCard";
+import { useSearchParams } from "react-router-dom";
 
 type Address = {
   id: string; user_id: string; label: string | null; full_name: string; phone: string;
@@ -25,9 +27,11 @@ const emptyAddr = { label: "Home", full_name: "", phone: "", address: "", city: 
 
 const Account = () => {
   const { user, loading, signOut } = useAuth();
+  const [params] = useSearchParams();
   const [displayName, setDisplayName] = useState("");
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const [wishlist, setWishlist] = useState<ProductCardData[]>([]);
   const [newAddr, setNewAddr] = useState<any>(emptyAddr);
   const [busy, setBusy] = useState(false);
 
@@ -39,6 +43,13 @@ const Account = () => {
       .then(({ data }) => setOrders(data ?? []));
     (supabase as any).from("user_addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false })
       .then(({ data }: any) => setAddresses(data ?? []));
+    (async () => {
+      const { data: w } = await (supabase as any).from("wishlists").select("product_id").eq("user_id", user.id);
+      const ids = (w ?? []).map((r: any) => r.product_id);
+      if (ids.length === 0) { setWishlist([]); return; }
+      const { data: prods } = await supabase.from("products").select("id,name,slug,price,compare_at_price,images").in("id", ids).eq("is_active", true);
+      setWishlist((prods ?? []) as ProductCardData[]);
+    })();
   }, [user]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
@@ -92,12 +103,25 @@ const Account = () => {
           <Button variant="outline" size="sm" onClick={signOut}><LogOut className="h-4 w-4 mr-2" />Sign out</Button>
         </div>
 
-        <Tabs defaultValue="orders">
+        <Tabs defaultValue={params.get("tab") || "orders"}>
           <TabsList>
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-2" />Orders</TabsTrigger>
+            <TabsTrigger value="wishlist"><Heart className="h-4 w-4 mr-2" />Wishlist</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-2" />Addresses</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-2" />Profile</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="wishlist" className="mt-6">
+            {wishlist.length === 0 ? (
+              <Card><CardContent className="py-12 text-center text-muted-foreground">
+                Your wishlist is empty. <Link to="/" className="underline ml-1">Browse products</Link>
+              </CardContent></Card>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
+                {wishlist.map(p => <ProductCard key={p.id} p={p} />)}
+              </div>
+            )}
+          </TabsContent>
 
           <TabsContent value="orders" className="mt-6 space-y-3">
             {orders.length === 0 ? (

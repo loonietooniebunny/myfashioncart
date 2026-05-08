@@ -1,8 +1,9 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ShoppingBag, Search, User, X, Menu } from "lucide-react";
+import { ShoppingBag, Search, User, X, Menu, Heart } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const NAV = [
   { to: "/shop/women", label: "Women" },
@@ -13,6 +14,7 @@ const NAV = [
 
 export const Navbar = () => {
   const { count, setOpen } = useCart();
+  const { settings } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,11 +36,12 @@ export const Navbar = () => {
     setQ("");
   };
 
+  const siteName = settings?.site_name || "MAISON";
+
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur border-b border-border" : "bg-transparent"}`}>
         <div className="container grid grid-cols-3 items-center h-16 md:h-20">
-          {/* Left: nav (desktop) / menu (mobile) */}
           <nav className="hidden md:flex items-center gap-7 text-xs tracking-wider-2 uppercase">
             {NAV.map(n => (
               <NavLink key={n.to} to={n.to} className={({isActive}) => `hover:text-accent transition-colors ${isActive ? "text-accent" : ""}`}>{n.label}</NavLink>
@@ -48,16 +51,18 @@ export const Navbar = () => {
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Center: logo */}
-          <Link to="/" className="font-serif text-2xl md:text-3xl tracking-luxe text-center justify-self-center">
-            MAISON
+          <Link to="/" className="font-serif text-2xl md:text-3xl tracking-luxe text-center justify-self-center flex items-center gap-2">
+            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-8 w-auto object-contain" />}
+            <span>{siteName.toUpperCase()}</span>
           </Link>
 
-          {/* Right: actions */}
           <div className="flex items-center gap-5 justify-self-end">
             <button aria-label="Search" onClick={() => setSearchOpen(true)} className="hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
             </button>
+            <Link to="/account?tab=wishlist" aria-label="Wishlist" className="hidden sm:inline-flex hover:text-accent transition-colors">
+              <Heart className="h-4 w-4" />
+            </Link>
             <Link to="/account" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
@@ -71,7 +76,6 @@ export const Navbar = () => {
         </div>
       </header>
 
-      {/* Search overlay */}
       {searchOpen && (
         <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="container pt-24">
@@ -94,7 +98,6 @@ export const Navbar = () => {
         </div>
       )}
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="fixed inset-0 z-[60] bg-background md:hidden animate-in fade-in duration-200">
           <div className="flex justify-end p-6">
@@ -104,7 +107,8 @@ export const Navbar = () => {
             {NAV.map(n => (
               <NavLink key={n.to} to={n.to} onClick={() => setMenuOpen(false)}>{n.label}</NavLink>
             ))}
-            <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Account</Link>
+            <Link to="/account?tab=wishlist" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Wishlist</Link>
+            <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase">Account</Link>
           </nav>
         </div>
       )}

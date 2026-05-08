@@ -5,7 +5,9 @@ import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Heart, Share2 } from "lucide-react";
+import { Reviews } from "@/components/storefront/Reviews";
+import { useWishlist } from "@/hooks/useWishlist";
 
 type Product = {
   id: string; name: string; slug: string; description: string | null;
@@ -20,6 +22,7 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [imgIdx, setImgIdx] = useState(0);
   const { add } = useCart();
+  const { has, toggle } = useWishlist();
 
   useEffect(() => {
     if (!slug) return;
@@ -57,9 +60,18 @@ const ProductDetail = () => {
         <div className="lg:sticky lg:top-28 lg:self-start space-y-6">
           <p className="text-xs tracking-luxe uppercase text-muted-foreground">MAISON</p>
           <h1 className="font-serif text-4xl md:text-5xl">{p.name}</h1>
-          <div className="flex items-center gap-3">
-            <span className="text-xl">${Number(p.price).toLocaleString()}</span>
-            {p.compare_at_price && <span className="text-muted-foreground line-through text-sm">${Number(p.compare_at_price).toLocaleString()}</span>}
+          <div className="flex items-center gap-3 flex-wrap">
+            {p.compare_at_price && Number(p.compare_at_price) > Number(p.price) ? (
+              <>
+                <span className="text-2xl font-semibold text-primary">Rs {Number(p.price).toLocaleString()}</span>
+                <span className="text-muted-foreground line-through text-sm">Rs {Number(p.compare_at_price).toLocaleString()}</span>
+                <span className="bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded">
+                  -{Math.round((1 - Number(p.price) / Number(p.compare_at_price)) * 100)}%
+                </span>
+              </>
+            ) : (
+              <span className="text-xl">Rs {Number(p.price).toLocaleString()}</span>
+            )}
           </div>
           {p.description && <p className="text-muted-foreground leading-relaxed">{p.description}</p>}
 
@@ -89,6 +101,19 @@ const ProductDetail = () => {
           <Button onClick={handleAdd} className="w-full rounded-none h-12 tracking-wider-2 text-xs uppercase">
             Add to Bag
           </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" onClick={() => toggle(p.id)} className="rounded-none h-11">
+              <Heart className={`h-4 w-4 mr-2 ${has(p.id) ? "fill-destructive text-destructive" : ""}`} />
+              {has(p.id) ? "Saved" : "Wishlist"}
+            </Button>
+            <Button variant="outline" onClick={async () => {
+              const url = window.location.href;
+              if ((navigator as any).share) { try { await (navigator as any).share({ title: p.name, url }); return; } catch {} }
+              await navigator.clipboard.writeText(url); toast.success("Link copied");
+            }} className="rounded-none h-11">
+              <Share2 className="h-4 w-4 mr-2" />Share
+            </Button>
+          </div>
 
           <div className="border-t border-border pt-6 space-y-3 text-xs text-muted-foreground">
             <p>Complimentary shipping on orders over $500</p>
@@ -99,6 +124,10 @@ const ProductDetail = () => {
           <Link to="/" className="inline-block text-xs tracking-luxe uppercase underline underline-offset-4">← Continue browsing</Link>
         </div>
       </div>
+
+      <section className="container py-12 md:py-16 max-w-3xl border-t border-border">
+        <Reviews productId={p.id} />
+      </section>
     </StoreLayout>
   );
 };

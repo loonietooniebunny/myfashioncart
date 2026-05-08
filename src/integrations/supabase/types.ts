@@ -271,6 +271,45 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          body: string | null
+          created_at: string
+          customer_name: string
+          id: string
+          is_approved: boolean
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          customer_name: string
+          id?: string
+          is_approved?: boolean
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          customer_name?: string
+          id?: string
+          is_approved?: boolean
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       shipping_zones: {
         Row: {
           city: string
@@ -300,6 +339,63 @@ export type Database = {
           fee?: number
           id?: string
           is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          footer_text: string | null
+          hero_cta_link: string | null
+          hero_cta_text: string | null
+          hero_image_url: string | null
+          hero_subtitle: string | null
+          hero_title: string | null
+          id: string
+          logo_url: string | null
+          site_name: string
+          social_facebook: string | null
+          social_instagram: string | null
+          social_twitter: string | null
+          theme_primary_hsl: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          footer_text?: string | null
+          hero_cta_link?: string | null
+          hero_cta_text?: string | null
+          hero_image_url?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          id?: string
+          logo_url?: string | null
+          site_name?: string
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          theme_primary_hsl?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          footer_text?: string | null
+          hero_cta_link?: string | null
+          hero_cta_text?: string | null
+          hero_image_url?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          id?: string
+          logo_url?: string | null
+          site_name?: string
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_twitter?: string | null
+          theme_primary_hsl?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -369,6 +465,27 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
           user_id?: string
         }
         Relationships: []

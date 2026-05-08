@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
+import { SiteSettingsProvider } from "@/hooks/useSiteSettings";
 import Home from "./pages/Home.tsx";
 import Shop from "./pages/Shop.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
@@ -24,19 +25,21 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <CartProvider>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop/:slug" element={<Shop />} />
-              <Route path="/product/:slug" element={<ProductDetail />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </CartProvider>
+          <SiteSettingsProvider>
+            <CartProvider>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop/:slug" element={<Shop />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </CartProvider>
+          </SiteSettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
