@@ -5,8 +5,9 @@ import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { ProductCard, ProductCardData } from "@/components/storefront/ProductCard";
 import { useReveal } from "@/hooks/useReveal";
 import { Button } from "@/components/ui/button";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const HERO = "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=2000&q=80";
+const HERO_FALLBACK = "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=2000&q=80";
 const EDITORIAL_1 = "https://images.unsplash.com/photo-1487744480471-9ca1bca6fb7d?w=1600&q=80";
 const EDITORIAL_2 = "https://images.unsplash.com/photo-1475180098004-ca77a66827be?w=1600&q=80";
 
