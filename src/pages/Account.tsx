@@ -103,12 +103,25 @@ const Account = () => {
           <Button variant="outline" size="sm" onClick={signOut}><LogOut className="h-4 w-4 mr-2" />Sign out</Button>
         </div>
 
-        <Tabs defaultValue="orders">
+        <Tabs defaultValue={params.get("tab") || "orders"}>
           <TabsList>
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-2" />Orders</TabsTrigger>
+            <TabsTrigger value="wishlist"><Heart className="h-4 w-4 mr-2" />Wishlist</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-2" />Addresses</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-2" />Profile</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="wishlist" className="mt-6">
+            {wishlist.length === 0 ? (
+              <Card><CardContent className="py-12 text-center text-muted-foreground">
+                Your wishlist is empty. <Link to="/" className="underline ml-1">Browse products</Link>
+              </CardContent></Card>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
+                {wishlist.map(p => <ProductCard key={p.id} p={p} />)}
+              </div>
+            )}
+          </TabsContent>
 
           <TabsContent value="orders" className="mt-6 space-y-3">
             {orders.length === 0 ? (
