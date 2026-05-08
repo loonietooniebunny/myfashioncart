@@ -30,9 +30,6 @@ export const QuickView = ({ slug, open, onOpenChange }: { slug: string | null; o
     setP(null); setImgIdx(0);
     supabase.from("products").select("*").eq("slug", slug).maybeSingle()
       .then(({ data }) => { setP(data as any); setSize((data as any)?.sizes?.[0] ?? ""); });
-    supabase.from("reviews").select("rating").eq("is_approved", true)
-      .eq("product_id", (slug as any)) // will refilter once we have product id
-      .then(() => {});
   }, [slug, open]);
 
   useEffect(() => {
