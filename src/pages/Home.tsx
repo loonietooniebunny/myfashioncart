@@ -12,6 +12,7 @@ const EDITORIAL_1 = "https://images.unsplash.com/photo-1487744480471-9ca1bca6fb7
 const EDITORIAL_2 = "https://images.unsplash.com/photo-1475180098004-ca77a66827be?w=1600&q=80";
 
 const Home = () => {
+  const { settings } = useSiteSettings();
   const [featured, setFeatured] = useState<ProductCardData[]>([]);
   const [scrollY, setScrollY] = useState(0);
   const r1 = useReveal<HTMLDivElement>();
@@ -20,13 +21,33 @@ const Home = () => {
   const r4 = useReveal<HTMLDivElement>();
 
   useEffect(() => {
-    supabase.from("products").select("id,name,slug,price,compare_at_price,images")
-      .eq("is_featured", true).eq("is_active", true).limit(8)
-      .then(({ data }) => setFeatured((data ?? []) as ProductCardData[]));
+    (async () => {
+      const { data } = await supabase.from("products").select("id,name,slug,price,compare_at_price,images")
+        .eq("is_featured", true).eq("is_active", true).limit(8);
+      const list = (data ?? []) as ProductCardData[];
+      if (list.length > 0) {
+        const { data: rev } = await supabase.from("reviews").select("product_id,rating").eq("is_approved", true).in("product_id", list.map(p => p.id));
+        const map = new Map<string, { sum: number; n: number }>();
+        (rev ?? []).forEach((r: any) => {
+          const e = map.get(r.product_id) ?? { sum: 0, n: 0 };
+          e.sum += r.rating; e.n += 1; map.set(r.product_id, e);
+        });
+        setFeatured(list.map(p => {
+          const e = map.get(p.id);
+          return e ? { ...p, avg_rating: e.sum / e.n, review_count: e.n } : p;
+        }));
+      } else { setFeatured(list); }
+    })();
     const onScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const heroImg = settings?.hero_image_url || HERO_FALLBACK;
+  const heroTitle = settings?.hero_title || "The Art of Quiet Luxury";
+  const heroSub = settings?.hero_subtitle || "A new chapter — sculpted silhouettes, hand-finished in our Italian ateliers.";
+  const ctaText = settings?.hero_cta_text || "Discover the Collection";
+  const ctaLink = settings?.hero_cta_link || "/shop/women";
 
   return (
     <StoreLayout transparentNav>
@@ -36,19 +57,19 @@ const Home = () => {
           className="absolute inset-0 parallax-slow"
           style={{ transform: `translateY(${scrollY * 0.4}px) scale(1.05)` }}
         >
-          <img src={HERO} alt="" className="w-full h-[120%] object-cover" />
+          <img src={heroImg} alt="" className="w-full h-[120%] object-cover" />
           <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         </div>
         <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 text-cream text-center fade-up">
           <p className="text-xs tracking-luxe uppercase mb-6 text-cream/80">Spring · Summer 2026</p>
           <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-balance max-w-4xl px-6">
-            The Art of Quiet Luxury
+            {heroTitle}
           </h1>
           <p className="mt-6 max-w-md px-6 text-cream/80 text-sm leading-relaxed">
-            A new chapter — sculpted silhouettes, hand-finished in our Italian ateliers.
+            {heroSub}
           </p>
           <Button asChild className="mt-10 rounded-none bg-cream text-ink hover:bg-cream/90 h-12 px-10 text-xs tracking-luxe uppercase">
-            <Link to="/shop/women">Discover the Collection</Link>
+            <Link to={ctaLink}>{ctaText}</Link>
           </Button>
         </div>
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-cream/70 text-[10px] tracking-luxe uppercase animate-pulse">Scroll</div>
