@@ -43,6 +43,13 @@ const Account = () => {
       .then(({ data }) => setOrders(data ?? []));
     (supabase as any).from("user_addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false })
       .then(({ data }: any) => setAddresses(data ?? []));
+    (async () => {
+      const { data: w } = await (supabase as any).from("wishlists").select("product_id").eq("user_id", user.id);
+      const ids = (w ?? []).map((r: any) => r.product_id);
+      if (ids.length === 0) { setWishlist([]); return; }
+      const { data: prods } = await supabase.from("products").select("id,name,slug,price,compare_at_price,images").in("id", ids).eq("is_active", true);
+      setWishlist((prods ?? []) as ProductCardData[]);
+    })();
   }, [user]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
