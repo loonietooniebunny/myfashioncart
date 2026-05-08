@@ -5,7 +5,9 @@ import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Heart, Share2 } from "lucide-react";
+import { Reviews } from "@/components/storefront/Reviews";
+import { useWishlist } from "@/hooks/useWishlist";
 
 type Product = {
   id: string; name: string; slug: string; description: string | null;
