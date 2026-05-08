@@ -11,9 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { LogOut, Home, Package, MapPin, User as UserIcon, Plus, Trash2 } from "lucide-react";
+import { LogOut, Home, Package, MapPin, User as UserIcon, Plus, Trash2, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { StoreLayout } from "@/components/storefront/StoreLayout";
+import { ProductCard, ProductCardData } from "@/components/storefront/ProductCard";
+import { useSearchParams } from "react-router-dom";
 
 type Address = {
   id: string; user_id: string; label: string | null; full_name: string; phone: string;
@@ -25,9 +27,11 @@ const emptyAddr = { label: "Home", full_name: "", phone: "", address: "", city: 
 
 const Account = () => {
   const { user, loading, signOut } = useAuth();
+  const [params] = useSearchParams();
   const [displayName, setDisplayName] = useState("");
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const [wishlist, setWishlist] = useState<ProductCardData[]>([]);
   const [newAddr, setNewAddr] = useState<any>(emptyAddr);
   const [busy, setBusy] = useState(false);
 
