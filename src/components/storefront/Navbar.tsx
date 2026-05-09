@@ -65,6 +65,11 @@ export const Navbar = () => {
             <Link to="/account?tab=wishlist" aria-label="Wishlist" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <Heart className="h-4 w-4" />
             </Link>
+            {isAdmin && (
+              <Link to="/admin" aria-label="Admin" className="hidden sm:inline-flex hover:text-accent transition-colors text-destructive">
+                <Shield className="h-4 w-4" />
+              </Link>
+            )}
             <Link to="/account" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
