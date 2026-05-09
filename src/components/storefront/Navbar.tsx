@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ShoppingBag, Search, User, X, Menu, Heart } from "lucide-react";
+import { ShoppingBag, Search, User, X, Menu, Heart, Shield } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
