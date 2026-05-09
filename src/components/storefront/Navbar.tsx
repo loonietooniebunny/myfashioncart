@@ -116,6 +116,9 @@ export const Navbar = () => {
             ))}
             <Link to="/account?tab=wishlist" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Wishlist</Link>
             <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase">Account</Link>
+            {isAdmin && (
+              <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase text-destructive">Admin Panel</Link>
+            )}
           </nav>
         </div>
       )}
