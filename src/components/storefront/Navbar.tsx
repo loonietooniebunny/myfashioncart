@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ShoppingBag, Search, User, X, Menu, Heart } from "lucide-react";
+import { ShoppingBag, Search, User, X, Menu, Heart, Shield } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -14,6 +15,7 @@ const NAV = [
 
 export const Navbar = () => {
   const { count, setOpen } = useCart();
+  const { user, isAdmin } = useAuth();
   const { settings } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -63,6 +65,11 @@ export const Navbar = () => {
             <Link to="/account?tab=wishlist" aria-label="Wishlist" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <Heart className="h-4 w-4" />
             </Link>
+            {isAdmin && (
+              <Link to="/admin" aria-label="Admin" className="hidden sm:inline-flex hover:text-accent transition-colors text-destructive">
+                <Shield className="h-4 w-4" />
+              </Link>
+            )}
             <Link to="/account" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
@@ -109,6 +116,9 @@ export const Navbar = () => {
             ))}
             <Link to="/account?tab=wishlist" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Wishlist</Link>
             <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase">Account</Link>
+            {isAdmin && (
+              <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase text-destructive">Admin Panel</Link>
+            )}
           </nav>
         </div>
       )}
