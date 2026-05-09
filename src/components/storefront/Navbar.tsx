@@ -15,6 +15,7 @@ const NAV = [
 
 export const Navbar = () => {
   const { count, setOpen } = useCart();
+  const { user, isAdmin } = useAuth();
   const { settings } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
