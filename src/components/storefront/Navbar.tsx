@@ -1,7 +1,8 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ShoppingBag, Search, User, X, Menu, Heart, Shield } from "lucide-react";
+import { ShoppingBag, Search, User, X, Menu, Heart, Shield, Sun, Moon } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -15,8 +16,9 @@ const NAV = [
 
 export const Navbar = () => {
   const { count, setOpen } = useCart();
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const { settings } = useSiteSettings();
+  const { theme, toggle: toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,35 +44,44 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur border-b border-border" : "bg-transparent"}`}>
-        <div className="container grid grid-cols-3 items-center h-16 md:h-20">
-          <nav className="hidden md:flex items-center gap-7 text-xs tracking-wider-2 uppercase">
-            {NAV.map(n => (
-              <NavLink key={n.to} to={n.to} className={({isActive}) => `hover:text-accent transition-colors ${isActive ? "text-accent" : ""}`}>{n.label}</NavLink>
-            ))}
-          </nav>
-          <button className="md:hidden justify-self-start hover:text-accent" aria-label="Menu" onClick={() => setMenuOpen(true)}>
-            <Menu className="h-5 w-5" />
-          </button>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur border-b border-border" : "bg-background/70 backdrop-blur-sm"}`}>
+        <div className="container flex items-center justify-between gap-4 h-16 md:h-20">
+          {/* Left: mobile menu + desktop nav */}
+          <div className="flex items-center gap-6 flex-1 min-w-0">
+            <button className="lg:hidden hover:text-accent shrink-0" aria-label="Menu" onClick={() => setMenuOpen(true)}>
+              <Menu className="h-5 w-5" />
+            </button>
+            <nav className="hidden lg:flex items-center gap-6 text-xs tracking-wider-2 uppercase">
+              {NAV.map(n => (
+                <NavLink key={n.to} to={n.to} className={({isActive}) => `hover:text-accent transition-colors ${isActive ? "text-accent" : ""}`}>{n.label}</NavLink>
+              ))}
+            </nav>
+          </div>
 
-          <Link to="/" className="font-serif text-2xl md:text-3xl tracking-luxe text-center justify-self-center flex items-center gap-2">
-            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-8 w-auto object-contain" />}
-            <span>{siteName.toUpperCase()}</span>
+          {/* Center: logo */}
+          <Link to="/" className="font-serif text-xl md:text-2xl lg:text-3xl tracking-luxe text-center flex items-center gap-2 shrink-0">
+            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-7 w-auto object-contain" />}
+            <span className="truncate">{siteName.toUpperCase()}</span>
           </Link>
 
-          <div className="flex items-center gap-5 justify-self-end">
+          {/* Right: actions */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 justify-end min-w-0">
             <button aria-label="Search" onClick={() => setSearchOpen(true)} className="hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
+            </button>
+            <button aria-label="Toggle theme" onClick={toggleTheme} className="hover:text-accent transition-colors">
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <Link to="/account?tab=wishlist" aria-label="Wishlist" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <Heart className="h-4 w-4" />
             </Link>
             {isAdmin && (
-              <Link to="/admin" aria-label="Admin" className="hidden sm:inline-flex hover:text-accent transition-colors text-destructive">
-                <Shield className="h-4 w-4" />
+              <Link to="/admin" aria-label="Admin panel" title="Admin panel" className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-accent text-accent-foreground hover:opacity-90 transition-opacity">
+                <Shield className="h-3.5 w-3.5" />
+                <span className="hidden md:inline text-[10px] tracking-wider-2 uppercase font-medium">Admin</span>
               </Link>
             )}
-            <Link to="/account" aria-label="Account" className="hidden sm:inline-flex hover:text-accent transition-colors">
+            <Link to="/account" aria-label="Account" className="hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
             <button aria-label="Cart" onClick={() => setOpen(true)} className="relative hover:text-accent transition-colors">
@@ -106,7 +117,7 @@ export const Navbar = () => {
       )}
 
       {menuOpen && (
-        <div className="fixed inset-0 z-[60] bg-background md:hidden animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[60] bg-background lg:hidden animate-in fade-in duration-200">
           <div className="flex justify-end p-6">
             <button onClick={() => setMenuOpen(false)} aria-label="Close"><X className="h-5 w-5" /></button>
           </div>
@@ -117,7 +128,7 @@ export const Navbar = () => {
             <Link to="/account?tab=wishlist" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Wishlist</Link>
             <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase">Account</Link>
             {isAdmin && (
-              <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase text-destructive">Admin Panel</Link>
+              <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase text-accent">⚡ Admin Panel</Link>
             )}
           </nav>
         </div>
