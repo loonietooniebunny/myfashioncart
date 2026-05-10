@@ -29,10 +29,10 @@ const Admin = () => {
         </div>
       </header>
       <main className="container py-8">
-        <Tabs defaultValue="orders">
+        <Tabs defaultValue="products">
             <TabsList className="flex-wrap h-auto">
-              <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="products">Products</TabsTrigger>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
               <TabsTrigger value="shipping">Shipping</TabsTrigger>
