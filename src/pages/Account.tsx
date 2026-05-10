@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { LogOut, Home, Package, MapPin, User as UserIcon, Plus, Trash2, Heart } from "lucide-react";
+import { LogOut, Package, MapPin, User as UserIcon, Plus, Trash2, Heart, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { ProductCard, ProductCardData } from "@/components/storefront/ProductCard";
@@ -26,7 +26,7 @@ type Address = {
 const emptyAddr = { label: "Home", full_name: "", phone: "", address: "", city: "", state: "", zip: "", country: "Pakistan", is_default: false };
 
 const Account = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const [params] = useSearchParams();
   const [displayName, setDisplayName] = useState("");
   const [orders, setOrders] = useState<any[]>([]);
@@ -95,16 +95,19 @@ const Account = () => {
   return (
     <StoreLayout>
       <div className="container py-12 max-w-5xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-serif text-3xl">My Account</h1>
             <p className="text-sm text-muted-foreground mt-1">{user.email}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={signOut}><LogOut className="h-4 w-4 mr-2" />Sign out</Button>
+          <div className="flex flex-wrap justify-end gap-2">
+            {isAdmin && <Button size="sm" asChild><Link to="/admin"><Shield className="h-4 w-4 mr-2" />Admin Panel</Link></Button>}
+            <Button variant="outline" size="sm" onClick={signOut}><LogOut className="h-4 w-4 mr-2" />Sign out</Button>
+          </div>
         </div>
 
         <Tabs defaultValue={params.get("tab") || "orders"}>
-          <TabsList>
+          <TabsList className="grid grid-cols-2 sm:flex sm:flex-wrap h-auto w-full sm:w-auto">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-2" />Orders</TabsTrigger>
             <TabsTrigger value="wishlist"><Heart className="h-4 w-4 mr-2" />Wishlist</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-2" />Addresses</TabsTrigger>

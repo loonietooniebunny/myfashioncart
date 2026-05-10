@@ -44,10 +44,10 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur border-b border-border" : "bg-background/70 backdrop-blur-sm"}`}>
-        <div className="container flex items-center justify-between gap-4 h-16 md:h-20">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur border-b border-border" : "bg-background/95 lg:bg-background/70 backdrop-blur-sm border-b border-border/60 lg:border-b-0"}`}>
+        <div className="container px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 h-14 sm:h-16 lg:h-20">
           {/* Left: mobile menu + desktop nav */}
-          <div className="flex items-center gap-6 flex-1 min-w-0">
+          <div className="flex items-center gap-6 w-10 lg:w-auto lg:flex-1 min-w-0">
             <button className="lg:hidden hover:text-accent shrink-0" aria-label="Menu" onClick={() => setMenuOpen(true)}>
               <Menu className="h-5 w-5" />
             </button>
@@ -59,32 +59,32 @@ export const Navbar = () => {
           </div>
 
           {/* Center: logo */}
-          <Link to="/" className="font-serif text-xl md:text-2xl lg:text-3xl tracking-luxe text-center flex items-center gap-2 shrink-0">
+          <Link to="/" className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl tracking-wider-2 lg:tracking-luxe text-center flex items-center gap-2 shrink min-w-0 max-w-[38vw] sm:max-w-none">
             {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-7 w-auto object-contain" />}
             <span className="truncate">{siteName.toUpperCase()}</span>
           </Link>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-3 sm:gap-4 flex-1 justify-end min-w-0">
-            <button aria-label="Search" onClick={() => setSearchOpen(true)} className="hover:text-accent transition-colors">
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 w-auto lg:flex-1 justify-end min-w-0">
+            <button aria-label="Search" onClick={() => setSearchOpen(true)} className="inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
             </button>
-            <button aria-label="Toggle theme" onClick={toggleTheme} className="hover:text-accent transition-colors">
+            <button aria-label="Toggle theme" onClick={toggleTheme} className="inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <Link to="/account?tab=wishlist" aria-label="Wishlist" className="hidden sm:inline-flex hover:text-accent transition-colors">
               <Heart className="h-4 w-4" />
             </Link>
             {isAdmin && (
-              <Link to="/admin" aria-label="Admin panel" title="Admin panel" className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-accent text-accent-foreground hover:opacity-90 transition-opacity">
-                <Shield className="h-3.5 w-3.5" />
+              <Link to="/admin" aria-label="Admin panel" title="Admin panel" className="inline-flex h-8 min-w-8 items-center justify-center gap-1 px-2 rounded-sm bg-accent text-accent-foreground hover:opacity-90 transition-opacity shrink-0">
+                <Shield className="h-4 w-4" />
                 <span className="hidden md:inline text-[10px] tracking-wider-2 uppercase font-medium">Admin</span>
               </Link>
             )}
-            <Link to="/account" aria-label="Account" className="hover:text-accent transition-colors">
+            <Link to="/account" aria-label="Account" className="inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               <User className="h-4 w-4" />
             </Link>
-            <button aria-label="Cart" onClick={() => setOpen(true)} className="relative hover:text-accent transition-colors">
+            <button aria-label="Cart" onClick={() => setOpen(true)} className="relative inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               <ShoppingBag className="h-4 w-4" />
               {count > 0 && (
                 <span className="absolute -top-2 -right-3 text-[10px] bg-foreground text-background rounded-full h-4 min-w-4 px-1 flex items-center justify-center">{count}</span>
@@ -128,7 +128,7 @@ export const Navbar = () => {
             <Link to="/account?tab=wishlist" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase mt-8">Wishlist</Link>
             <Link to="/account" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase">Account</Link>
             {isAdmin && (
-              <Link to="/admin" onClick={() => setMenuOpen(false)} className="text-base tracking-luxe uppercase text-accent">⚡ Admin Panel</Link>
+              <Link to="/admin" onClick={() => setMenuOpen(false)} className="inline-flex items-center gap-2 text-base tracking-luxe uppercase text-accent"><Shield className="h-4 w-4" /> Admin Panel</Link>
             )}
           </nav>
         </div>

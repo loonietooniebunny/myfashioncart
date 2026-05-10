@@ -21,31 +21,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+    let mounted = true;
+
+    const applySession = async (s: Session | null) => {
+      if (!mounted) return;
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) {
-        setTimeout(async () => {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", s.user.id)
-            .eq("role", "admin")
-            .maybeSingle();
-          setIsAdmin(!!data);
-        }, 0);
-      } else {
+
+      if (!s?.user) {
         setIsAdmin(false);
+        setLoading(false);
+        return;
       }
-    });
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", s.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (!mounted) return;
+      if (error) console.error("Failed to load admin role", error);
+      setIsAdmin(!!data && !error);
+      setLoading(false);
+    };
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setLoading(true);
       setSession(s);
       setUser(s?.user ?? null);
-      setLoading(false);
+      setTimeout(() => { void applySession(s); }, 0);
     });
 
-    return () => sub.subscription.unsubscribe();
+    supabase.auth.getSession()
+      .then(({ data: { session: s }, error }) => {
+        if (error) console.error("Failed to load session", error);
+        void applySession(error ? null : s);
+      })
+      .catch((error) => {
+        console.error("Failed to initialize auth", error);
+        void applySession(null);
+      });
+
+    return () => { mounted = false; sub.subscription.unsubscribe(); };
   }, []);
 
   const signOut = async () => { await supabase.auth.signOut(); };
