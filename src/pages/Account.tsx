@@ -95,7 +95,7 @@ const Account = () => {
   return (
     <StoreLayout>
       <div className="container py-12 max-w-5xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-serif text-3xl">My Account</h1>
             <p className="text-sm text-muted-foreground mt-1">{user.email}</p>
@@ -107,7 +107,7 @@ const Account = () => {
         </div>
 
         <Tabs defaultValue={params.get("tab") || "orders"}>
-          <TabsList>
+          <TabsList className="grid grid-cols-2 sm:flex sm:flex-wrap h-auto w-full sm:w-auto">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-2" />Orders</TabsTrigger>
             <TabsTrigger value="wishlist"><Heart className="h-4 w-4 mr-2" />Wishlist</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-2" />Addresses</TabsTrigger>
