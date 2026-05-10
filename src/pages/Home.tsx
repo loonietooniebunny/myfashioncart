@@ -52,7 +52,7 @@ const Home = () => {
   return (
     <StoreLayout transparentNav>
       {/* HERO */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative min-h-[640px] h-[100svh] w-full overflow-hidden">
         <div
           className="absolute inset-0 parallax-slow"
           style={{ transform: `translateY(${scrollY * 0.4}px) scale(1.05)` }}
@@ -60,15 +60,15 @@ const Home = () => {
           <img src={heroImg} alt="" className="w-full h-[120%] object-cover" />
           <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         </div>
-        <div className="relative z-10 h-full flex flex-col items-center justify-end pb-24 text-cream text-center fade-up">
+        <div className="relative z-10 h-full flex flex-col items-center justify-end pt-24 pb-20 md:pb-24 text-cream text-center fade-up">
           <p className="text-xs tracking-luxe uppercase mb-6 text-cream/80">Spring · Summer 2026</p>
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-balance max-w-4xl px-6">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-balance max-w-4xl px-6">
             {heroTitle}
           </h1>
           <p className="mt-6 max-w-md px-6 text-cream/80 text-sm leading-relaxed">
             {heroSub}
           </p>
-          <Button asChild className="mt-10 rounded-none bg-cream text-ink hover:bg-cream/90 h-12 px-10 text-xs tracking-luxe uppercase">
+          <Button asChild className="mt-8 md:mt-10 rounded-none bg-cream text-ink hover:bg-cream/90 h-12 px-8 md:px-10 text-xs tracking-wider-2 md:tracking-luxe uppercase">
             <Link to={ctaLink}>{ctaText}</Link>
           </Button>
         </div>
