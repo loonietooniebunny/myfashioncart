@@ -107,6 +107,23 @@ const Checkout = () => {
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Order placed! We'll contact you shortly.");
+    // Mobile: vibrate + browser notification
+    try {
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate?.([120, 60, 120]);
+      }
+      if (typeof window !== "undefined" && "Notification" in window) {
+        const notify = () => new Notification("Order confirmed ✓", {
+          body: `Thanks ${form.customer_name.split(" ")[0] || ""}! Your order of ${fmt(total)} is being processed.`,
+          icon: settings?.logo_url || "/placeholder.svg",
+          tag: "order-confirmed",
+        });
+        if (Notification.permission === "granted") notify();
+        else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(p => p === "granted" && notify());
+        }
+      }
+    } catch {}
     clear();
     nav("/");
   };
