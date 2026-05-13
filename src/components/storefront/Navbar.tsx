@@ -59,8 +59,8 @@ export const Navbar = () => {
           </div>
 
           {/* Center: logo */}
-          <Link to="/" className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl tracking-wider-2 lg:tracking-luxe text-center flex items-center gap-2 shrink min-w-0 max-w-[38vw] sm:max-w-none">
-            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-7 w-auto object-contain" />}
+          <Link to="/" className="font-serif text-sm sm:text-lg md:text-xl lg:text-3xl tracking-wider lg:tracking-luxe text-center flex items-center gap-1.5 shrink min-w-0 max-w-[40vw] lg:max-w-none mx-1">
+            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-6 sm:h-7 w-auto object-contain shrink-0" />}
             <span className="truncate">{siteName.toUpperCase()}</span>
           </Link>
 
