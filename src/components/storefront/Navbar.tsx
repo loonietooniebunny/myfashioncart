@@ -59,13 +59,13 @@ export const Navbar = () => {
           </div>
 
           {/* Center: logo */}
-          <Link to="/" className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl tracking-wider-2 lg:tracking-luxe text-center flex items-center gap-2 shrink min-w-0 max-w-[38vw] sm:max-w-none">
-            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-7 w-auto object-contain" />}
+          <Link to="/" className="font-serif text-sm sm:text-lg md:text-xl lg:text-3xl tracking-wider lg:tracking-luxe text-center flex items-center gap-1.5 shrink min-w-0 max-w-[40vw] lg:max-w-none mx-1">
+            {settings?.logo_url && <img src={settings.logo_url} alt={siteName} className="h-6 sm:h-7 w-auto object-contain shrink-0" />}
             <span className="truncate">{siteName.toUpperCase()}</span>
           </Link>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 w-auto lg:flex-1 justify-end min-w-0">
+          <div className="flex items-center gap-0.5 sm:gap-2 lg:gap-4 w-auto lg:flex-1 justify-end min-w-0 shrink-0">
             <button aria-label="Search" onClick={() => setSearchOpen(true)} className="inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
             </button>
