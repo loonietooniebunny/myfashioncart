@@ -15,6 +15,7 @@ import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Search from "./pages/Search.tsx";
 import Account from "./pages/Account.tsx";
+import OrderStatus from "./pages/OrderStatus.tsx";
 
 const queryClient = new QueryClient();
 
