@@ -172,6 +172,60 @@ const OrderStatus = () => {
               </div>
             </div>
 
+            {/* Contact support */}
+            {(() => {
+              const orderRef = `#${order.id.slice(0, 8).toUpperCase()}`;
+              const subject = `Help with order ${orderRef}`;
+              const body = `Hi support team,\n\nI need help with my order ${orderRef} (full id: ${order.id}).\nName: ${order.customer_name}\nEmail: ${order.customer_email}\nPhone: ${order.customer_phone}\nStatus: ${order.order_status}\n\nMy question:\n`;
+              const email = settings?.contact_email;
+              const phoneRaw = settings?.contact_phone || "";
+              const waNumber = phoneRaw.replace(/[^\d]/g, "");
+              const mailto = email ? `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` : null;
+              const wa = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`${subject}\n\n${body}`)}` : null;
+              const tel = phoneRaw ? `tel:${phoneRaw}` : null;
+
+              return (
+                <div className="mt-8 bg-secondary p-5 sm:p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <LifeBuoy className="h-5 w-5 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs tracking-luxe uppercase">Need help?</p>
+                      <p className="text-sm text-muted-foreground mt-1">Message support about order {orderRef}.</p>
+                    </div>
+                  </div>
+
+                  {!supportOpen && (
+                    <Button onClick={() => setSupportOpen(true)} className="w-full sm:w-auto rounded-none h-11 tracking-wider-2 text-xs uppercase">
+                      Contact support
+                    </Button>
+                  )}
+
+                  {supportOpen && (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {mailto && (
+                        <a href={mailto} className="flex items-center justify-center gap-2 h-11 px-4 bg-foreground text-background text-xs tracking-wider-2 uppercase hover:opacity-90 transition-opacity">
+                          <Mail className="h-4 w-4" /> Email support
+                        </a>
+                      )}
+                      {wa && (
+                        <a href={wa} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 h-11 px-4 border border-foreground text-xs tracking-wider-2 uppercase hover:bg-foreground hover:text-background transition-colors">
+                          <MessageCircle className="h-4 w-4" /> WhatsApp
+                        </a>
+                      )}
+                      {tel && !wa && (
+                        <a href={tel} className="flex items-center justify-center gap-2 h-11 px-4 border border-foreground text-xs tracking-wider-2 uppercase hover:bg-foreground hover:text-background transition-colors">
+                          <MessageCircle className="h-4 w-4" /> Call us
+                        </a>
+                      )}
+                      {!mailto && !wa && !tel && (
+                        <p className="text-sm text-muted-foreground sm:col-span-2">Support contact isn't set yet. Add a contact email or phone in Site Settings.</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
             <div className="text-center mt-10">
               <Link to="/" className="text-xs tracking-luxe uppercase underline">Continue shopping</Link>
             </div>
