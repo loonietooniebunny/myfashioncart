@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { StoreLayout } from "@/components/storefront/StoreLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, Clock, Package, Truck, Home as HomeIcon, XCircle } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { Button } from "@/components/ui/button";
+import { Check, Clock, Package, Truck, Home as HomeIcon, XCircle, LifeBuoy, Mail, MessageCircle } from "lucide-react";
 
 type Order = {
   id: string;
