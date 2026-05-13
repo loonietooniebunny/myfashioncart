@@ -65,7 +65,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 w-auto lg:flex-1 justify-end min-w-0">
+          <div className="flex items-center gap-0.5 sm:gap-2 lg:gap-4 w-auto lg:flex-1 justify-end min-w-0 shrink-0">
             <button aria-label="Search" onClick={() => setSearchOpen(true)} className="inline-flex h-8 w-8 items-center justify-center hover:text-accent transition-colors">
               <Search className="h-4 w-4" />
             </button>
