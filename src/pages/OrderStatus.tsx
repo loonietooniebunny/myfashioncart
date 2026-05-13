@@ -33,9 +33,11 @@ const STEPS = [
 
 const OrderStatus = () => {
   const { id } = useParams();
+  const { settings } = useSiteSettings();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
