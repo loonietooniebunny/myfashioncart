@@ -103,11 +103,10 @@ const Checkout = () => {
       order_status: "pending",
       receipt_url,
     };
-    const { error } = await supabase.from("orders" as any).insert(payload);
+    const { data: inserted, error } = await supabase.from("orders" as any).insert(payload).select("id").single();
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("Order placed! We'll contact you shortly.");
-    // Mobile: vibrate + browser notification
+    toast.success("Order placed! Tracking your delivery now.");
     try {
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         navigator.vibrate?.([120, 60, 120]);
@@ -125,7 +124,7 @@ const Checkout = () => {
       }
     } catch {}
     clear();
-    nav("/");
+    nav(`/order/${(inserted as any)?.id ?? ""}`);
   };
 
   const fmt = (n: number) => `${currency} ${n.toLocaleString()}`;
