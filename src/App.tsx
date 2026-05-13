@@ -37,6 +37,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin/*" element={<Admin />} />
                 <Route path="/account" element={<Account />} />
+                <Route path="/order/:id" element={<OrderStatus />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </CartProvider>
